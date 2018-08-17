@@ -25,6 +25,7 @@ function Initial()
 	mkdir /scripts/Finished
 	
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
+	wget -O $TEMP/whitelist.txt 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
 	
 }
 
@@ -53,6 +54,7 @@ function piholeInstall()
 
 function piholeUpdate()
 {
+	cat $TEMP/whitelist.txt >> /etc/pihole/whitelist.txt
 	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wait
 	wget -O $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
@@ -83,7 +85,9 @@ function CloudflaredConfig()
 	systemctl status cloudflared
 	
 	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/50-cloudflared.conf'
+	wait
 	
+	crontab crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
 }
 
 #Main Program
