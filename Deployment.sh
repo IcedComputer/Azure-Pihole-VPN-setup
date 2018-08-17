@@ -24,7 +24,6 @@ function Initial()
 	mkdir /scripts/temp
 	mkdir /scripts/Finished
 	
-	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 	wget -O $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
 	
 }
@@ -41,9 +40,8 @@ function f2b()
 	wget -O $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
 	wait
 
-	chmod 777 /etc/fail2ban/jail.local
-	cat $TEMP/permaban.temp >> /etc/fail2ban/jail.local
-	chmod 644 /etc/fail2ban/jail.local
+	mv $TEMP/permaban.temp /etc/fail2ban/jail.local
+	wget -O $TEMP/additional.config 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/sshd_config'
 }
 
 function piholeInstall()
@@ -97,19 +95,15 @@ function CloudflaredConfig()
 function piVpn()
 {
 	curl -L https://install.pivpn.io | bash
+	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 
 }
 
-function OpenVPN()
-{
-
-}
 
 function Cleanup()
 {
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
- rm -f $TEMP/permaban.temp
 }
 
 #Main Program
@@ -120,5 +114,4 @@ piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
 piVpn
-#OpenVPN
 #Cleanup
