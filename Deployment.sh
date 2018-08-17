@@ -24,8 +24,8 @@ function Initial()
 	mkdir /scripts/temp
 	mkdir /scripts/Finished
 	
-	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
+	
 }
 
 function f2b()
@@ -45,14 +45,51 @@ function f2b()
 	chmod 644 /etc/fail2ban/jail.local
 }
 
-function pihole()
+function piholeInstall()
 {
 	curl -sSL https://install.pi-hole.net | bash
+	wait
+}
+
+function piholeUpdate()
+{
+	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
+	wait
+	wget -O $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
+	
+	
+	bash $FINISHED/updates.sh
+	wait
+}
+
+function CloudflaredInstall()
+{
+
+	wget -O $TEMP/Cloudflared.deb  'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb'
+	wait
+	apt-get install $TEMP/Cloudflared.deb
+	wait
+	cloudflared -v
 
 }
 
+function CloudflaredConfig()
+{
+	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFConfig'
+	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFService'
+	wait
+	systemctl enable cloudflared
+	systemctl start cloudflared
+	systemctl status cloudflared
+	
+	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/50-cloudflared.conf'
+	
+}
 
 #Main Program
 Initial
 f2b
-pihole
+piholeInstall
+piholeUpdate
+CloudflaredInstall
+CloudflaredConfig
