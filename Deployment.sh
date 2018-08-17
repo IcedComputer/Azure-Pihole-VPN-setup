@@ -54,7 +54,10 @@ function piholeInstall()
 
 function piholeUpdate()
 {
+	chmod 777 /etc/pihole/whitelist.txt
 	cat $TEMP/whitelist.txt >> /etc/pihole/whitelist.txt
+	chmod 644 /etc/pihole/whitelist.txt
+	
 	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wait
 	wget -O $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
@@ -77,17 +80,23 @@ function CloudflaredInstall()
 
 function CloudflaredConfig()
 {
-	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFConfig'
+	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFconfig'
 	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFService'
 	wait
 	systemctl enable cloudflared
 	systemctl start cloudflared
-	systemctl status cloudflared
+
 	
 	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/50-cloudflared.conf'
 	wait
 	
 	crontab crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
+}
+
+function piVpn()
+{
+	curl -L https://install.pivpn.io | bash
+
 }
 
 #Main Program
@@ -97,3 +106,4 @@ piholeInstall
 piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
+piVpn
