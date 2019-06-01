@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ##  Deployment Script for Azure Pihole + VPN service using Cloudflare as DNS service
-##	Created by: Iced
-##  Last Modified 17 August 2018
+##	Created by: Iced Computer
+##  Last Modified 31 May 2019
 ##
 ##
 ##
@@ -102,6 +102,10 @@ function piVpn()
 
 function Cleanup()
 {
+ echo go to /etc/ssh/sshd_config and fix the file!
+ wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
+ echo go to /etc/ssh/sshd_config and fix the file!
+  
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
 }
@@ -113,5 +117,5 @@ piholeInstall
 piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
-piVpn
-#Cleanup
+#piVpn
+Cleanup
