@@ -17,14 +17,20 @@ FINISHED=/scripts/Finished
 function Install()
 {
 	apt-get update
-	apt-get install openvpn easy-rsa
+	apt-get install openvpn easy-rsa -y
 
 }
 
 function CA()
 {
+ make-cadir ~/openvpn-ca
+ <<download var file into location>
  
-
+ cd ~/openvpn-ca
+ source vars
+ ./clean-all
+ 
+ 
 }
 
 
