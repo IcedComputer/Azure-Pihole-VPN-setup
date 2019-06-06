@@ -37,6 +37,15 @@ function CA()
  ./build-dh
  wait
  openvpn --genkey --secret keys/ta.key
+ wait
+ 
+ 
+ cd ~/openvpn-ca/keys
+ sudo cp ca.crt server.crt server.key ta.key dh2048.pem /etc/openvpn
+ wait
+ gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz | sudo tee /etc/openvpn/server.conf
+ 
+ 
 }
 
 
