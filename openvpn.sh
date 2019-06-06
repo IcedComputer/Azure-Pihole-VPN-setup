@@ -24,13 +24,19 @@ function Install()
 function CA()
 {
  make-cadir ~/openvpn-ca
- <<download var file into location>
+ <<download var file into location>>
  
  cd ~/openvpn-ca
  source vars
  ./clean-all
- 
- 
+ wait
+ ./build-ca
+ wait
+ ./build-key-server <server name>
+ wait
+ ./build-dh
+ wait
+ openvpn --genkey --secret keys/ta.key
 }
 
 
