@@ -3,6 +3,7 @@
 ##  Deployment Script for Azure Pihole + VPN service using Cloudflare as DNS service
 ##  This script is for the OpenVPN server
 ##	Created by: Iced Computer
+##  16
 ##  Last Modified 31 May 2019
 ##
 ##
@@ -24,10 +25,10 @@ function Install()
 function CA()
 {
  make-cadir ~/openvpn-ca
- <<download var file into location>>
+ cp /usr/share/easy-rsa/vars ~/openvpn-ca/vars
  
  cd ~/openvpn-ca
- source vars
+ source ./vars
  ./clean-all
  wait
  ./build-ca

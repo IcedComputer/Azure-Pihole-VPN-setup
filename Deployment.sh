@@ -102,9 +102,18 @@ function piVpn()
 
 function Cleanup()
 {
- echo go to /etc/ssh/sshd_config and fix the file!
+ 
  wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
+ 
+ echo ********************************************
+ echo ********************************************
  echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo ********************************************
+ echo ********************************************
+ 
   
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
