@@ -2,39 +2,70 @@
 
 ##  Deployment Script for Azure Pihole + VPN service using Cloudflare as DNS service
 ##	Created by: Iced Computer
-##  Last Modified 31 May 2019
-##
-##
+##  Last Modified 14 June 2019
+## Some info taken from Pivpn & Pihole (launchers)
 ##
 
 ## VARS
 
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
+PIHOLE=/etc/pihole
 
+##Screen Size
+
+# Find the rows and columns. Will default to 80x24 if it can not be detected.
+screen_size=$(stty size 2>/dev/null || echo 24 80)
+rows=$(echo $screen_size | awk '{print $1}')
+columns=$(echo $screen_size | awk '{print $2}')
+# Divide by two so the dialogs take up half of the screen, which looks nice.
+r=$(( rows / 2 ))
+c=$(( columns / 2 ))
+# Unless the screen is tiny
+r=$(( r < 20 ? 20 : r ))
+c=$(( c < 70 ? 70 : c ))
+
+# Find IP used to route to outside world
+
+IPv4dev=$(ip route get 8.8.8.8 | awk '{for(i=1;i<=NF;i++)if($i~/dev/)print $(i+1)}')
+IPv4addr=$(ip route get 8.8.8.8| awk '{print $7}')
+IPv4gw=$(ip route get 8.8.8.8 | awk '{print $3}')
+
+## /VARS
 
 ###
+
+function Welcome()
+{
+ # Display the welcome dialog
+    whiptail --msgbox --backtitle "Welcome" --title "Azure VPN & Pihole" "This installer will transform your Azure Umbuntu Instance into a Pihole that leverages Cloud Flare DNS (https) w/ a VPN functionality!" ${r} ${c}
+
+    # Explain the need for a static address
+    whiptail --msgbox --backtitle "Check Azure Settings" --title "Static IP Needed" "This whole getup is a SERVER so it needs a STATIC IP ADDRESS to function properly." ${r} ${c}
+}
 
 
 function Initial()
 {
+	# update the service and setup directories
 	apt-get update && apt-get upgrade -y
 	wait
 	mkdir /scripts
-	mkdir /scripts/temp
-	mkdir /scripts/Finished
+	mkdir $TEMP
+	mkdir $FINISHED
 	
+	# get a whitelist just in case!
 	wget -O $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
 	
 }
 
 function f2b()
 {
-
-	apt-get install fail2ban
+	#Install Fail to Ban
+	apt-get install fail2ban -y
 	wait
 
-
+	#Establish a Permaban list
 	wget -O /etc/fail2ban/action.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/action.d_permaban.conf'
 	wget -O /etc/fail2ban/filter.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/filter.d_permaban.conf'
 	wget -O $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
@@ -46,29 +77,29 @@ function f2b()
 
 function piholeInstall()
 {
+	#Install Pihole
 	curl -sSL https://install.pi-hole.net | bash
 	wait
 }
 
 function piholeUpdate()
 {
-	cat $TEMP/whitelist.download etc/pihole/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
-	mv $TEMP/whitelist.txt /etc/pihole/whitelist.txt
+	#Update whitelist
+	cat $TEMP/whitelist.download $PIHOLE/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
+	mv $TEMP/whitelist.txt $PIHOLE/whitelist.txt
 
-	
+	#New Regex lists & blocking lists
 	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wait
 	wget -O $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
 	wait
-	
-	
 	bash $FINISHED/updates.sh
 	wait
 }
 
 function CloudflaredInstall()
 {
-
+	#Install Cloudflared
 	wget -O $TEMP/Cloudflared.deb  'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb'
 	wait
 	apt-get install $TEMP/Cloudflared.deb
@@ -94,17 +125,27 @@ function CloudflaredConfig()
 
 function piVpn()
 {
-	curl -L https://install.pivpn.io | bash
+	##curl -L https://install.pivpn.io | bash
+	mv ~/PIVPNinstaller.sh /$Finished
+	wait
+	curl -L PIVPNinstaller.sh | bash
+	wait
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 
 }
 
+function Hygene()
+{
+apt-get --yes --quiet --no-install-recommends install unattended-upgrades
+}
 
 function Cleanup()
 {
  
  wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
  
+ #Reminder to add your username into the sshd-config AllowedUsers section
+ whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
  echo ********************************************
  echo ********************************************
  echo go to /etc/ssh/sshd_config and fix the file!
@@ -114,17 +155,19 @@ function Cleanup()
  echo ********************************************
  echo ********************************************
  
-  
+  #cleanup of temp files
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
 }
 
 #Main Program
+Welcome
 Initial
 f2b
 piholeInstall
 piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
-#piVpn
+piVpn
+Hygene
 Cleanup
