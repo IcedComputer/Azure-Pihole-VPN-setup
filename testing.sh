@@ -877,12 +877,12 @@ EOF
         # Downloading parameters
 		#not sure what this did.
         #${SUDOE} curl "https://2ton.com.au/getprimes/random/dhparam/${ENCRYPT}" -o "/etc/openvpn/easy-rsa/pki/dh${ENCRYPT}.pem"
-		${SUDOE} ./easyrsa gen-dh
-        ${SUDOE} mv pki/dh.pem pki/dh${ENCRYPT}.pem
+		$SUDO ./easyrsa gen-dh
+        $SUDO mv pki/dh.pem pki/dh${ENCRYPT}.pem
       else
         # Generate Diffie-Hellman key exchange
-        ${SUDOE} ./easyrsa gen-dh
-        ${SUDOE} mv pki/dh.pem pki/dh${ENCRYPT}.pem
+		$SUDO ./easyrsa gen-dh
+        $SUDO mv pki/dh.pem pki/dh${ENCRYPT}.pem
       fi
     fi
 
