@@ -126,9 +126,10 @@ function CloudflaredConfig()
 function piVpn()
 {
 	##curl -L https://install.pivpn.io | bash
-	wget -O $Finished/PIVPNinstaller.sh
+	#wget -O $Finished/PIVPNinstaller.sh
+	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
-	curl -L $Finished/PIVPNinstaller.sh | bash
+	#curl -L $Finished/PIVPNinstaller.sh | bash
 	wait
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 
