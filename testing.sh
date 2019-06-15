@@ -751,7 +751,7 @@ confOpenVPN() {
 	$DEFAULT_SNAME="server"
 	SNAME=$(whiptail --title "Default Server X509 Name" --inputbox "You can modify the default Server Name. \nEnter a new value or hit 'Enter' to retain the default" ${r} ${c} $DEFAULT_SNAME 3>&1 1>&2 2>&3)
 	NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
-    SERVER_NAME="$SNAME_${NEW_UUID}"
+    SERVER_NAME="${SNAME}_${NEW_UUID}"
 	
 	
 
