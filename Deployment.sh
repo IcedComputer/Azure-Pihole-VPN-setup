@@ -159,7 +159,7 @@ function Cleanup()
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
- echo run command sed -i "s/#edit/AllowedUsers USERNAME/g" /scripts/temp/sshd_config
+ echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
  echo "********************************************"
  echo "********************************************"
  
