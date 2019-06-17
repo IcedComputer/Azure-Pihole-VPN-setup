@@ -11,10 +11,11 @@
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
 PIHOLE=/etc/pihole
+USR=whoami
 
 ##Screen Size
 
-# Find the rows and columns. Will default to 80x24 if it can not be detected.
+# Find the rows andmk columns. Will default to 80x24 if it can not be detected.
 screen_size=$(stty size 2>/dev/null || echo 24 80)
 rows=$(echo $screen_size | awk '{print $1}')
 columns=$(echo $screen_size | awk '{print $2}')
@@ -40,9 +41,7 @@ function Welcome()
  # Display the welcome dialog
     whiptail --msgbox --backtitle "Welcome" --title "Azure VPN & Pihole" "This installer will transform your Azure Umbuntu Instance into a Pihole that leverages Cloud Flare DNS (https) w/ a VPN functionality!" ${r} ${c}
 
-    # Explain the need for a static address
-    whiptail --msgbox --backtitle "Check Azure Settings" --title "Static IP Needed" "This whole getup is a SERVER so it needs a STATIC IP ADDRESS to function properly." ${r} ${c}
-}
+ }
 
 
 function Initial()
@@ -87,7 +86,8 @@ function piholeUpdate()
 	#Update whitelist
 	cat $TEMP/whitelist.download $PIHOLE/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
 	mv $TEMP/whitelist.txt $PIHOLE/whitelist.txt
-
+	
+	
 	#New Regex lists & blocking lists
 	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wait
@@ -121,15 +121,16 @@ function CloudflaredConfig()
 	wait
 	
 	crontab crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
+	
+	#fix some config issues with Pihole post Cloudflared
+	sed -i "s/PIHOLE_DNS/#PIHOLE_DNS/g" /etc/pihole/setupVars.conf
+
 }
 
 function piVpn()
 {
 	##curl -L https://install.pivpn.io | bash
-	#wget -O $Finished/PIVPNinstaller.sh
 	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
-	wait
-	#curl -L $Finished/PIVPNinstaller.sh | bash
 	wait
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 
@@ -145,16 +146,19 @@ function Cleanup()
  
  wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
  
+ 
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- echo ********************************************
- echo ********************************************
+ #sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
+ echo "********************************************"
+ echo "********************************************"
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
- echo ********************************************
- echo ********************************************
+ echo run command sed -i "s/#edit/AllowedUsers USERNAME/g" /scripts/temp/sshd_config
+ echo "********************************************"
+ echo "********************************************"
  
   #cleanup of temp files
  rm -f $TEMP/whitelist.download

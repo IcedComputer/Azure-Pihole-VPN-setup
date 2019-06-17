@@ -99,6 +99,7 @@ ClientAliveInterval 120
 
 # List of user names allowed to log in
 # FORMAT = AllowUsers <name>
+#edit
 
 #Banner
 #Banner /etc/banner/banner.txt
