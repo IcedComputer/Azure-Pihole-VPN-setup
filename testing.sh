@@ -748,7 +748,7 @@ confOpenVPN() {
     # Generate a random, alphanumeric identifier of 16 characters for this server so that we can use verify-x509-name later that is unique for this server installation. Source: Earthgecko (https://gist.github.com/earthgecko/3089509)
     
 	##ADDED
-	SNAME=$(echo hostname)
+	SNAME=echo $(echo hostname)
 	echo ${SNAME} > /tmp/INSTALL_Server_Name
     $SUDO cp /tmp/INSTALL_Server_Name /etc/pivpn/INSTALL_Server_Name
 	NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
