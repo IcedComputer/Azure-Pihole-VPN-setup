@@ -748,7 +748,7 @@ confOpenVPN() {
     # Generate a random, alphanumeric identifier of 16 characters for this server so that we can use verify-x509-name later that is unique for this server installation. Source: Earthgecko (https://gist.github.com/earthgecko/3089509)
     
 	##ADDED
-	SNAME=$(cat /scripts/temp/servername)
+	SNAME=$(echo hostname)
 	echo ${SNAME} > /tmp/INSTALL_Server_Name
     $SUDO cp /tmp/INSTALL_PORT /etc/pivpn/INSTALL_Server_Name
 	NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
@@ -929,9 +929,8 @@ EOF
     $SUDO sed -i "s/\(key \/etc\/openvpn\/easy-rsa\/pki\/private\/\).*/\1${SERVER_NAME}.key/" /etc/openvpn/server.conf
     $SUDO sed -i "s/\(cert \/etc\/openvpn\/easy-rsa\/pki\/issued\/\).*/\1${SERVER_NAME}.crt/" /etc/openvpn/server.conf
 	
-	#add some more config items
-	#$SUDO sed -i "s/\#\ Generated\ for\ use\ by\ PiVPN\.io/client-config-dir\ \/etc\/openvpn\/ccd/g" /etc/openvpn/server.conf
-	$SUDO mkdir /etc/openvpn/ccd
+
+	
 }
 
 confUnattendedUpgrades() {

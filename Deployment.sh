@@ -125,17 +125,22 @@ function CloudflaredConfig()
 	
 	#fix some config issues with Pihole post Cloudflared
 	sed -i "s/PIHOLE_DNS/#PIHOLE_DNS/g" /etc/pihole/setupVars.conf
+	sed -i "s/server=8.8/#server=8.8/g" /etc/dnsmasq.d/01-pihole.conf
 
 }
 
 function piVpn()
 {
+	
 	##curl -L https://install.pivpn.io | bash
 	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
 	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
 	#get some files to make it easy
 	wget -O $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
+	$SUDO mkdir /etc/openvpn/ccd
+	$SUDO sed -i "s/\#\ Generated\ for\ use\ by\ PiVPN\.io/client-config-dir\ \/etc\/openvpn\/ccd/g" /etc/openvpn/server.conf
+	$SUDO sed -i "s/client-to-client/#client-to-client/g" /etc/openvpn/server.conf
 
 }
 
