@@ -15,18 +15,19 @@ CLIENTDIR=$HOME/$USER
 CCERT=$CLIENTDIR/${USER}.crt
 CA=/etc/openvpn/easy-rsa/pki/ca.crt
 CKEY=/etc/openvpn/easy-rsa/pki/${USER}.key
-OVPN=$HOME/${USER}.ovpn
+OVPNS=$HOME/${USER}.ovpn
+OVPNF=$CLIENTDIR/${USER}.ovpn
 
 
 
 
 ## Setup
 mkdir $CLIENTDIR
-mv $OVPN $CLIENTDIR/
+mv $OVPNS $CLIENTDIR/
 cd $CLIENTDIR
 
 #split OVPN file into components needed
-cat $OVPN|awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "cert" n ".temp"}'
+cat $OVPNF|awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "cert" n ".temp"}'
 
 sed '1,2d' $CLIENTDIR/cert1.temp > $CCERT
 
