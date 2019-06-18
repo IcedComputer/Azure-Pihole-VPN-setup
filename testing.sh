@@ -750,7 +750,7 @@ confOpenVPN() {
 	##ADDED
 	SNAME=$(echo hostname)
 	echo ${SNAME} > /tmp/INSTALL_Server_Name
-    $SUDO cp /tmp/INSTALL_PORT /etc/pivpn/INSTALL_Server_Name
+    $SUDO cp /tmp/INSTALL_Server_Name /etc/pivpn/INSTALL_Server_Name
 	NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
     SERVER_NAME="${SNAME}_${NEW_UUID}"
 	
