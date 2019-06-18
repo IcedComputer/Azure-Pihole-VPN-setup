@@ -37,3 +37,6 @@ rm $CLIENTDIR/cert2.temp
 
 openssl pkcs12 -export -in $CCERT -inkey $CKEY -certfile $CA -name $USER -out /$CLIENTDIR/${USER}.ovpn12
 
+echo "#ifconfig-push 10.8.0.12 255.255.255.0" > /etc/openvpn/ccd/$USER
+echo "CHECK YOUR CCD FOR IP ADDRESSES /etc/openvpn/ccd/{$USER}"
+
