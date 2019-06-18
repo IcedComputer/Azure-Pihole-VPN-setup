@@ -854,6 +854,7 @@ EOF
     printf "::: Building CA...\n"
     ${SUDOE} ./easyrsa --batch build-ca 
 	# TEST: removed nopass from line above
+	wait
     printf "\n::: CA Complete.\n"
 
     if [[ ${useUpdateVars} == false ]]; then
