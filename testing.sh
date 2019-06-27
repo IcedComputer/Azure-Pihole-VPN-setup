@@ -784,8 +784,8 @@ confOpenVPN() {
 
             ENCRYPT=$(whiptail --backtitle "Setup OpenVPN" --title "RSA certificate size" --radiolist \
             "Choose the desired size of your certificate (press space to select):\n   This is a certificate that will be generated on your system.  The larger the certificate, the more time this will take.  For most applications, it is recommended to use 2048 bits.  If you are testing, you can use 1024 bits to speed things up, but do not use this for normal use!  If you are paranoid about ... things... then grab a cup of joe and pick 4096 bits." ${r} ${c} 3 \
-            "1024" "Use a 1024-bit certificate (testing only)" OFF \
-            "2048" "Use a 2048-bit certificate (recommended level)" ON \
+            "2048" "Use a 2048-bit certificate (standard level)" OFF \
+			"3072" "Use a 3072-bit certificate (Next level)" ON \
             "4096" "Use a 4096-bit certificate (paranoid level)" OFF 3>&1 1>&2 2>&3)
 
         else
