@@ -239,6 +239,8 @@ if [ ! -f "${TA}" ]; then
 fi
 echo "tls-auth Private Key found: $TA"
 
+mkdir /home/$INSTALL_USER/ovpns/$NAME
+echo "#ifconfig-push 10.8.0.12 255.255.255.0" > /etc/openvpn/ccd/${NAME}
 
 ## Added new step to create an .ovpn12 file that can be stored on iOS keychain
 ## This step is more secure method and does not require the end-user to keep entering passwords, or storing the client private cert where it can be easily tampered
@@ -279,9 +281,9 @@ if [ "$iOS" = "1" ]; then
 	printf "Please remember the export password\n"
 	printf "as you will need this import the certificate on your iOS device\n"
 	printf "========================================================\n"
-	openssl pkcs12 -passin pass:$PASSWD -passin pass:$PASSWD -export -in issued/${NAME}${CRT} -inkey private/${NAME}${KEY} -certfile ${CA} -name ${NAME} -out /home/$INSTALL_USER/ovpns/$NAME.ovpn12
-	chown "$INSTALL_USER" "/home/$INSTALL_USER/ovpns/$NAME.ovpn12"
-	chmod o-r "/home/$INSTALL_USER/ovpns/$NAME.ovpn12"
+	openssl pkcs12 -passin pass:$PASSWD -passin pass:$PASSWD -export -in issued/${NAME}${CRT} -inkey private/${NAME}${KEY} -certfile ${CA} -name ${NAME} -out /home/$INSTALL_USER/ovpns/$NAME/$NAME.ovpn12
+	chown "$INSTALL_USER" "/home/$INSTALL_USER/ovpns/$NAME/$NAME.ovpn12"
+	chmod o-r "/home/$INSTALL_USER/ovpns/$NAME/$NAME.ovpn12"
 	printf "========================================================\n"
 	printf "\e[1mDone! %s successfully created!\e[0m \n" "$NAME.ovpn12"
 	printf "You will need to transfer both the .ovpn and .ovpn12 files\n"
@@ -325,15 +327,15 @@ else
 fi
 
 # Copy the .ovpn profile to the home directory for convenient remote access
-cp "/etc/openvpn/easy-rsa/pki/$NAME$FILEEXT" "/home/$INSTALL_USER/ovpns/$NAME$FILEEXT"
-chown "$INSTALL_USER" "/home/$INSTALL_USER/ovpns/$NAME$FILEEXT"
+cp "/etc/openvpn/easy-rsa/pki/$NAME$FILEEXT" "/home/$INSTALL_USER/ovpns/$NAME/$NAME$FILEEXT"
+chown "$INSTALL_USER" "/home/$INSTALL_USER/ovpns/$NAME/$NAME$FILEEXT"
 chmod o-r "/etc/openvpn/easy-rsa/pki/$NAME$FILEEXT"
-chmod o-r "/home/$INSTALL_USER/ovpns/$NAME$FILEEXT"
+chmod o-r "/home/$INSTALL_USER/ovpns/$NAME/$NAME$FILEEXT"
 printf "\n\n"
 printf "========================================================\n"
 printf "\e[1mDone! %s successfully created!\e[0m \n" "$NAME$FILEEXT"
 printf "%s was copied to:\n" "$NAME$FILEEXT"
-printf "  /home/%s/ovpns\n" "$INSTALL_USER"
+printf "  /home/%s/ovpns\n" "$INSTALL_USER/"
 printf "for easy transfer. Please use this profile only on one\n"
 printf "device and create additional profiles for other devices.\n"
 printf "========================================================\n\n"
