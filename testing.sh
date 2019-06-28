@@ -835,7 +835,7 @@ set_var EASYRSA_CRL_DAYS   3650
 set_var EASYRSA_REQ_COUNTRY    "US"
 set_var EASYRSA_REQ_PROVINCE   "CA"
 set_var EASYRSA_REQ_CITY       "San Francisco"
-set_var EASYRSA_DIGEST			"sha512"
+
 EOF
     echo "${String}" | $SUDO tee vars >/dev/null
     set -e
