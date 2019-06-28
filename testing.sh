@@ -835,6 +835,7 @@ set_var EASYRSA_CRL_DAYS   3650
 set_var EASYRSA_REQ_COUNTRY    "US"
 set_var EASYRSA_REQ_PROVINCE   "CA"
 set_var EASYRSA_REQ_CITY       "San Francisco"
+set_var EASYRSA_DIGEST			"sha512"
 
 EOF
     echo "${String}" | $SUDO tee vars >/dev/null
@@ -851,7 +852,7 @@ EOF
 
     # Remove any previous keys
     ${SUDOE} ./easyrsa --batch init-pki
-	$SUDO sed -i "s/sha256/sha384/g" /etc/openvpn/easy-rsa/pki/safessl-easyrsa.cnf
+
 	
     # Build the certificate authority
     printf "::: Building CA...\n"
