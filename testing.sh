@@ -852,8 +852,6 @@ EOF
     # Remove any previous keys
     ${SUDOE} ./easyrsa --batch init-pki
 
-	# increase SHA type
-	$SUDO sed -i 's/sha256/sha384/g' /etc/openvpn/easy-rsa/pki/safessl-easyrsa.cnf
 	
     # Build the certificate authority
     printf "::: Building CA...\n"
@@ -932,6 +930,9 @@ EOF
     # write out server certs to conf file
     $SUDO sed -i "s/\(key \/etc\/openvpn\/easy-rsa\/pki\/private\/\).*/\1${SERVER_NAME}.key/" /etc/openvpn/server.conf
     $SUDO sed -i "s/\(cert \/etc\/openvpn\/easy-rsa\/pki\/issued\/\).*/\1${SERVER_NAME}.crt/" /etc/openvpn/server.conf
+	
+	#SHA384
+	$SUDO sed -i "s/SHA256/SHA384/g" /etc/openvpn/server.conf
 	
 
 	
@@ -1085,6 +1086,8 @@ confOVPN() {
         $SUDO mkdir "/home/$pivpnUser/ovpns"
     fi
     $SUDO chmod 0777 -R "/home/$pivpnUser/ovpns"
+	$SUDO sed -i "s/SHA256/SHA384/g" /etc/openvpn/easy-rsa/pki/Default.txt
+	
 }
 
 confLogging() {
