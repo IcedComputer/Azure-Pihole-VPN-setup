@@ -851,7 +851,7 @@ EOF
 
     # Remove any previous keys
     ${SUDOE} ./easyrsa --batch init-pki
-
+	$SUDO sed -i "s/sha256/sha384/g" /etc/openvpn/easy-rsa/pki/safessl-easyrsa.cnf
 	
     # Build the certificate authority
     printf "::: Building CA...\n"
