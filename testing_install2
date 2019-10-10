@@ -401,7 +401,7 @@ installScripts() {
         $SUDO chown "$INSTALL_USER":root /opt/pivpn
         $SUDO chmod 0755 /opt/pivpn
     fi
-    $SUDO cp /etc/.pivpn/scripts/makeOVPN.sh /opt/pivpn/makeOVPN.sh
+    $SUDO wget -O  /opt/pivpn/makeOVPN.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/test_MakeOVPN_2.sh'
     $SUDO cp /etc/.pivpn/scripts/clientStat.sh /opt/pivpn/clientStat.sh
     $SUDO cp /etc/.pivpn/scripts/listOVPN.sh /opt/pivpn/listOVPN.sh
     $SUDO cp /etc/.pivpn/scripts/removeOVPN.sh /opt/pivpn/removeOVPN.sh
