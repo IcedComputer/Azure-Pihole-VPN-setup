@@ -1,17 +1,16 @@
 #!/bin/bash
 
-##  Deployment Script for Azure Pihole + VPN service using Cloudflare as DNS service
+##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 14 June 2019
+##  Last Modified 18 October 2019
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
 ## VARS
-
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
 PIHOLE=/etc/pihole
-USR=whoami
+USR=/etc/pivpn/INSTALL_USER
 
 ##Screen Size
 
@@ -27,7 +26,6 @@ r=$(( r < 20 ? 20 : r ))
 c=$(( c < 70 ? 70 : c ))
 
 # Find IP used to route to outside world
-
 IPv4dev=$(ip route get 8.8.8.8 | awk '{for(i=1;i<=NF;i++)if($i~/dev/)print $(i+1)}')
 IPv4addr=$(ip route get 8.8.8.8| awk '{print $7}')
 IPv4gw=$(ip route get 8.8.8.8 | awk '{print $3}')
@@ -47,7 +45,7 @@ function Welcome()
 function Initial()
 {
 	# update the service and setup directories
-	apt-get update && apt-get upgrade -y
+	apt-get update && apt-get dist-upgrade -y
 	wait
 	mkdir /scripts
 	mkdir $TEMP
@@ -157,18 +155,19 @@ function Cleanup()
  
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- #sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
- echo "********************************************"
- echo "********************************************"
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
- echo "********************************************"
- echo "********************************************"
+ sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
  
-  #cleanup of temp files
+ #echo "********************************************"
+ #echo "********************************************"
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
+ #echo "********************************************"
+ #echo "********************************************"
+ 
+ #cleanup of temp files
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
 }
