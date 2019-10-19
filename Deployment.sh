@@ -109,14 +109,14 @@ function CloudflaredInstall()
 
 function CloudflaredConfig()
 {
-	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFconfig'
-	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFService'
+	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFconfig'
+	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFService'
 	wait
 	systemctl enable cloudflared
 	systemctl start cloudflared
 
 	
-	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/50-cloudflared.conf'
+	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/50-cloudflared.conf'
 	wait
 	
 	crontab crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
@@ -133,7 +133,7 @@ function piVpn()
 	##curl -L https://install.pivpn.io | bash
 	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
-	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
+	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
 	#get some files to make it easy
 	wget -O $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
 	$SUDO mkdir /etc/openvpn/ccd
@@ -150,7 +150,7 @@ apt-get --yes --quiet --no-install-recommends install unattended-upgrades
 function Cleanup()
 {
  
- wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
+ wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/sshd_config.txt'
  sudo iptables -A FORWARD -i tun0 -o tun0 -j DROP
  
  #Reminder to add your username into the sshd-config AllowedUsers section
