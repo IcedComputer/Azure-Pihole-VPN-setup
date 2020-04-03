@@ -5,6 +5,8 @@ CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.1/.well-known/dns-query --u
 
 ## Anti-Malware
 #CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.2/.well-known/dns-query --upstream https://1.0.0.2/.well-known/dns-query
+#CLOUDFLARED_OPTS=--port 555 --upstream https://security.cloudflare-dns.com/dns-query --upstream https://security.cloudflare-dns.com/dns-query
 
 ## Anti-Malware & Anti-Adult
-# CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.3/.well-known/dns-query --upstream https://1.0.0.3/.well-known/dns-query
+#CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.3/.well-known/dns-query --upstream https://1.0.0.3/.well-known/dns-query
+#CLOUDFLARED_OPTS=--port 555 --upstream https://family.cloudflare-dns.com/dns-query --upstream https://family.cloudflare-dns.com/dns-query
