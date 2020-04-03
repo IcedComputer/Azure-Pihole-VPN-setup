@@ -1,2 +1,10 @@
 # Commandline args for cloudflared
+
+## Normal
 CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.1/.well-known/dns-query --upstream https://1.0.0.1/.well-known/dns-query
+
+## Anti-Malware
+#CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.2/.well-known/dns-query --upstream https://1.0.0.2/.well-known/dns-query
+
+## Anti-Malware & Anti-Adult
+# CLOUDFLARED_OPTS=--port 555 --upstream https://1.1.1.3/.well-known/dns-query --upstream https://1.0.0.3/.well-known/dns-query
