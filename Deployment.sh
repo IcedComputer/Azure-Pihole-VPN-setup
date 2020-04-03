@@ -1,17 +1,16 @@
 #!/bin/bash
 
-##  Deployment Script for Azure Pihole + VPN service using Cloudflare as DNS service
+##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 14 June 2019
+##  Last Modified 18 October 2019
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
 ## VARS
-
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
 PIHOLE=/etc/pihole
-USR=whoami
+USR=/etc/pivpn/INSTALL_USER
 
 ##Screen Size
 
@@ -27,7 +26,6 @@ r=$(( r < 20 ? 20 : r ))
 c=$(( c < 70 ? 70 : c ))
 
 # Find IP used to route to outside world
-
 IPv4dev=$(ip route get 8.8.8.8 | awk '{for(i=1;i<=NF;i++)if($i~/dev/)print $(i+1)}')
 IPv4addr=$(ip route get 8.8.8.8| awk '{print $7}')
 IPv4gw=$(ip route get 8.8.8.8 | awk '{print $3}')
@@ -47,7 +45,7 @@ function Welcome()
 function Initial()
 {
 	# update the service and setup directories
-	apt-get update && apt-get upgrade -y
+	apt-get update && apt-get dist-upgrade -y
 	wait
 	mkdir /scripts
 	mkdir $TEMP
@@ -111,14 +109,14 @@ function CloudflaredInstall()
 
 function CloudflaredConfig()
 {
-	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFconfig'
-	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/CFService'
+	wget -O /etc/default/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFconfig'
+	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFService'
 	wait
 	systemctl enable cloudflared
 	systemctl start cloudflared
 
 	
-	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/50-cloudflared.conf'
+	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/50-cloudflared.conf'
 	wait
 	
 	crontab crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
@@ -135,7 +133,7 @@ function piVpn()
 	##curl -L https://install.pivpn.io | bash
 	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
-	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/02-ovpn.conf'
+	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
 	#get some files to make it easy
 	wget -O $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
 	$SUDO mkdir /etc/openvpn/ccd
@@ -152,23 +150,24 @@ apt-get --yes --quiet --no-install-recommends install unattended-upgrades
 function Cleanup()
 {
  
- wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/sshd_config.txt'
+ wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/sshd_config.txt'
  sudo iptables -A FORWARD -i tun0 -o tun0 -j DROP
  
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- #sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
- echo "********************************************"
- echo "********************************************"
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo go to /etc/ssh/sshd_config and fix the file!
- echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
- echo "********************************************"
- echo "********************************************"
+ sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
  
-  #cleanup of temp files
+ #echo "********************************************"
+ #echo "********************************************"
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo go to /etc/ssh/sshd_config and fix the file!
+ #echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
+ #echo "********************************************"
+ #echo "********************************************"
+ 
+ #cleanup of temp files
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
 }
