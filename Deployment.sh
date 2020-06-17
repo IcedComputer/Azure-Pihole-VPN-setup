@@ -2,8 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 16 June 2020
-## Version 2.0
+##  Last Modified 17 June 2020
+## Version 2.1
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -55,6 +55,7 @@ function Initial()
 	
 	# get a whitelist just in case!
 	curl -o $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
+
 		
 }
 
@@ -95,6 +96,7 @@ function piholeUpdate()
 	wait
 	bash $FINISHED/updates.sh
 	wait
+		
 }
 
 function CloudflaredInstall()
@@ -132,14 +134,15 @@ function piVpn()
 {
 	
 	curl -L https://install.pivpn.io | bash
-	##curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
-	curl -o /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
-	#get some files to make it easy
-	curl -o $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
-	$SUDO mkdir /etc/openvpn/ccd
-	$SUDO sed -i "s/\#\ Generated\ for\ use\ by\ PiVPN\.io/client-config-dir\ \/etc\/openvpn\/ccd/g" /etc/openvpn/server.conf
-	$SUDO sed -i "s/client-to-client/#client-to-client/g" /etc/openvpn/server.conf
+	
+	## OpenVPN items
+		#curl -o /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
+		#get some files to make it easy
+		#curl -o $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
+		#$SUDO mkdir /etc/openvpn/ccd
+		#$SUDO sed -i "s/\#\ Generated\ for\ use\ by\ PiVPN\.io/client-config-dir\ \/etc\/openvpn\/ccd/g" /etc/openvpn/server.conf
+		#$SUDO sed -i "s/client-to-client/#client-to-client/g" /etc/openvpn/server.conf
 
 }
 
@@ -179,10 +182,10 @@ function Cleanup()
 Welcome
 Initial
 f2b
-piVpn
 piholeInstall
 piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
+piVpn
 Hygene
 Cleanup
