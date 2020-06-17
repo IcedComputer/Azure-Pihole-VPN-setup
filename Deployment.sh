@@ -2,7 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 18 October 2019
+##  Last Modified 16 June 2020
+## Version 2.0
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -50,11 +51,11 @@ function Initial()
 	mkdir /scripts
 	mkdir $TEMP
 	mkdir $FINISHED
+	chmod 777 $FINISHED
 	
 	# get a whitelist just in case!
-	wget -O $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
-	
-	
+	curl -o $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
+		
 }
 
 function f2b()
@@ -64,13 +65,13 @@ function f2b()
 	wait
 
 	#Establish a Permaban list
-	wget -O /etc/fail2ban/action.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/action.d_permaban.conf'
-	wget -O /etc/fail2ban/filter.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/filter.d_permaban.conf'
-	wget -O $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
+	curl -o /etc/fail2ban/action.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/action.d_permaban.conf'
+	curl -o /etc/fail2ban/filter.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/filter.d_permaban.conf'
+	curl -o $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
 	wait
 
 	mv $TEMP/permaban.temp /etc/fail2ban/jail.local
-	wget -O $TEMP/additional.config 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/sshd_config'
+	curl -o $TEMP/additional.config 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/sshd_config'
 }
 
 function piholeInstall()
@@ -88,9 +89,9 @@ function piholeUpdate()
 	
 	
 	#New Regex lists & blocking lists
-	wget -O $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
+	curl -o $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
 	wait
-	wget -O $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
+	curl -o $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
 	wait
 	bash $FINISHED/updates.sh
 	wait
@@ -99,7 +100,7 @@ function piholeUpdate()
 function CloudflaredInstall()
 {
 	#Install Cloudflared
-	wget -O $TEMP/Cloudflared.deb  'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb'
+	curl -o $TEMP/Cloudflared.deb  'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb'
 	wait
 	apt-get install $TEMP/Cloudflared.deb
 	wait
@@ -109,14 +110,14 @@ function CloudflaredInstall()
 
 function CloudflaredConfig()
 {
-	wget -O /scripts/Finished/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFconfig'
-	wget -O /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFService'
+	curl -o $FINISHED/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFconfig'
+	curl -o /lib/systemd/system/cloudflared.service 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFService'
 	wait
 	systemctl enable cloudflared
 	systemctl start cloudflared
 
 	
-	wget -O /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/50-cloudflared.conf'
+	curl -o /etc/dnsmasq.d/50-cloudflared.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/50-cloudflared.conf'
 	wait
 	
 	crontab -l | { cat; echo "*/5 * * * * /bin/systemctl restart cloudflared"; } | crontab -
@@ -130,12 +131,12 @@ function CloudflaredConfig()
 function piVpn()
 {
 	
-	##curl -L https://install.pivpn.io | bash
-	curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
+	curl -L https://install.pivpn.io | bash
+	##curl -L https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/testing.sh | bash
 	wait
-	wget -O /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
+	curl -o /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
 	#get some files to make it easy
-	wget -O $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
+	curl -o $FINISHED/ovpen12.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ovpn12.sh'
 	$SUDO mkdir /etc/openvpn/ccd
 	$SUDO sed -i "s/\#\ Generated\ for\ use\ by\ PiVPN\.io/client-config-dir\ \/etc\/openvpn\/ccd/g" /etc/openvpn/server.conf
 	$SUDO sed -i "s/client-to-client/#client-to-client/g" /etc/openvpn/server.conf
@@ -150,7 +151,7 @@ apt-get --yes --quiet --no-install-recommends install unattended-upgrades
 function Cleanup()
 {
  
- wget -O /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/sshd_config.txt'
+ curl -o /etc/ssh/sshd_config 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/sshd_config.txt'
  sudo iptables -A FORWARD -i tun0 -o tun0 -j DROP
  
  #Reminder to add your username into the sshd-config AllowedUsers section
