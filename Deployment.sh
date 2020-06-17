@@ -52,6 +52,7 @@ function Initial()
 	mkdir $TEMP
 	mkdir $FINISHED
 	chmod 777 $FINISHED
+	chmod 777 $TEMP
 	
 	# get a whitelist just in case!
 	curl -o $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
