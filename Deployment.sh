@@ -156,7 +156,7 @@ function Cleanup()
  
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- sed -i "s/#edit/AllowedUsers ${USR}/g" /scripts/temp/sshd_config
+ sed -i "s/#edit/AllowedUsers ${USR}/g" /etc/ssh/sshd_config
  
  #echo "********************************************"
  #echo "********************************************"
@@ -171,16 +171,18 @@ function Cleanup()
  #cleanup of temp files
  rm -f $TEMP/whitelist.download
  rm -f $TEMP/Cloudflared.deb
+ 
+ apt autoremove -y
 }
 
 #Main Program
 Welcome
 Initial
 f2b
+piVpn
 piholeInstall
 piholeUpdate
 CloudflaredInstall
 CloudflaredConfig
-piVpn
 Hygene
 Cleanup
