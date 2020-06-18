@@ -79,9 +79,23 @@ function f2b()
 function piholeInstall()
 {
 	#Install Pihole
+	
 	curl -sSL https://install.pi-hole.net | bash
 	wait
-}
+	cd /etc/.pihole
+	sudo git fetch --tags
+	wait
+	sudo git checkout v4.4
+	wait
+	cd /var/www/html/admin
+	sudo git fetch --tags
+	wait
+	sudo git checkout v4.3.3
+	wait
+	pihole -r
+	wait
+	pihole checkout ftl v4.3.1
+	wait
 
 function piholeUpdate()
 {
