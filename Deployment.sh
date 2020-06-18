@@ -96,6 +96,7 @@ function piholeInstall()
 	wait
 	pihole checkout ftl v4.3.1
 	wait
+}
 
 function piholeUpdate()
 {
