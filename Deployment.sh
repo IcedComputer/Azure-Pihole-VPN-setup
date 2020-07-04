@@ -192,6 +192,9 @@ function Cleanup()
  rm -f $TEMP/Cloudflared.deb
  
  apt autoremove -y
+ 
+ crontab -l | { cat; echo "25 3 * * 2 /sbin/shutdown -r +5"; } | crontab -
+ crontab -l | { cat; echo "0 4 * * * bash /scripts/Finished/updates.sh"; } | crontab -
 }
 
 #Main Program
