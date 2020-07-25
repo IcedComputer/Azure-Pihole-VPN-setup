@@ -193,8 +193,8 @@ function Cleanup()
  
  apt autoremove -y
  
- crontab -l | { cat; echo "25 3 * * 2 /sbin/shutdown -r +5"; } | crontab -
- crontab -l | { cat; echo "0 4 * * * bash /scripts/Finished/updates.sh"; } | crontab -
+ crontab -l | { cat; echo "15 11 * * * /sbin/shutdown -r +5"; } | crontab -
+ crontab -l | { cat; echo "10 9 * * * bash /scripts/Finished/updates.sh"; } | crontab -
 }
 
 #Main Program
