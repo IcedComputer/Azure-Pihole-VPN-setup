@@ -54,8 +54,8 @@ function Initial()
 	chmod 777 $FINISHED
 	chmod 777 $TEMP
 	
-	# get a whitelist just in case!
-	curl -o $TEMP/whitelist.download 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/whitelist.txt'
+	# get a allowlist just in case!
+	curl -o $TEMP/basic.allow 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/Allow%20Lists/basic.allow'
 
 		
 }
@@ -101,15 +101,18 @@ function piholeInstall()
 function piholeUpdate()
 {
 	#Update whitelist
-	cat $TEMP/whitelist.download $PIHOLE/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
+	cat $TEMP/basic.allow $PIHOLE/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
 	mv $TEMP/whitelist.txt $PIHOLE/whitelist.txt
 	
-	
-	#New Regex lists & blocking lists
-	curl -o $FINISHED/updates.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/updates.sh'
+		
+	#download a new refresh.sh and run it to get updater
+	curl -o $TEMPDIR/refresh.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/Updates/refresh.sh'
+	wait
+	bash $TEMPDIR/refresh.sh
 	wait
 	curl -o $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
 	wait
+	# run updater
 	bash $FINISHED/updates.sh
 	wait
 		
@@ -188,13 +191,14 @@ function Cleanup()
  #echo "********************************************"
  
  #cleanup of temp files
- rm -f $TEMP/whitelist.download
+ rm -f $TEMP/basic.allow
  rm -f $TEMP/Cloudflared.deb
  
  apt autoremove -y
  
  crontab -l | { cat; echo "15 11 * * * /sbin/shutdown -r +5"; } | crontab -
  crontab -l | { cat; echo "10 9 * * * bash /scripts/Finished/updates.sh"; } | crontab -
+ crontab -l | { cat; echo "5 8 * * * bash /scripts/Finished/refresh.sh"; } | crontab -
 }
 
 #Main Program
