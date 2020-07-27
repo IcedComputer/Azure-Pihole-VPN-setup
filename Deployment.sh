@@ -2,8 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 17 June 2020
-## Version 2.1
+##  Last Modified 26 July 2020
+## Version 2.11
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -200,6 +200,7 @@ function Cleanup()
  crontab -l | { cat; echo "10 9 * * * bash /scripts/Finished/updates.sh"; } | crontab -
  crontab -l | { cat; echo "5 8 * * * bash /scripts/Finished/refresh.sh"; } | crontab -
 }
+
 
 #Main Program
 Welcome
