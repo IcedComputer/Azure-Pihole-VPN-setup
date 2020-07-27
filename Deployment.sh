@@ -178,7 +178,7 @@ function Cleanup()
  
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- sed -i "s/#edit/AllowUsers ${USR}/g" /etc/ssh/sshd_config
+ sed -i "s/#edit/AllowUsers {USR}g" /etc/ssh/sshd_config
  
  #echo "********************************************"
  #echo "********************************************"
