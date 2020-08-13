@@ -11,7 +11,7 @@
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
 PIHOLE=/etc/pihole
-USR=/etc/pivpn/INSTALL_USER
+CONFIG=/scripts/Finished/CONFIG
 
 ##Screen Size
 
@@ -51,12 +51,18 @@ function Initial()
 	mkdir /scripts
 	mkdir $TEMP
 	mkdir $FINISHED
+	mkdir $CONFIG
 	chmod 777 $FINISHED
 	chmod 777 $TEMP
+	chmod 777 $CONFIG
+	echo "full" >> $CONFIG/type.conf
+	echo "no" >> $CONFIG/test.conf
 	
 	# get a allowlist just in case!
 	curl -o $TEMP/basic.allow 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/Allow%20Lists/basic.allow'
-
+	
+	#download MFA
+	curl -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
 		
 }
 
@@ -129,6 +135,17 @@ function CloudflaredInstall()
 
 }
 
+function PiCloudflaredInstall()
+{
+	curl -o $TEMP/cloudflared-stable-linux-arm.tgz 'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-arm.tgz'
+	wait
+	tar -xvzf $TEMP/cloudflared-stable-linux-arm.tgz
+	wait
+	sudo cp ./cloudflared /usr/local/bin
+	sudo chmod +x /usr/local/bin/cloudflared
+	cloudflared -v
+}
+
 function CloudflaredConfig()
 {
 	curl -o $FINISHED/cloudflared 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/CFconfig'
@@ -148,6 +165,7 @@ function CloudflaredConfig()
 	sed -i "s/server=8.8/#server=8.8/g" /etc/dnsmasq.d/01-pihole.conf
 
 }
+
 
 function piVpn()
 {
@@ -178,17 +196,17 @@ function Cleanup()
  
  #Reminder to add your username into the sshd-config AllowedUsers section
  whiptail --msgbox --backtitle "WARNING" --title "Update SSHD_Config" "Hey idiot, remember to update your sshd_config file to add your AllowedUsers" ${r} ${c}
- sed -i "s/#edit/AllowUsers {USR}g" /etc/ssh/sshd_config
+ #sed -i "s/#edit/AllowUsers {USR}g" /etc/ssh/sshd_config
  
- #echo "********************************************"
- #echo "********************************************"
- #echo go to /etc/ssh/sshd_config and fix the file!
- #echo go to /etc/ssh/sshd_config and fix the file!
- #echo go to /etc/ssh/sshd_config and fix the file!
- #echo go to /etc/ssh/sshd_config and fix the file!
- #echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
- #echo "********************************************"
- #echo "********************************************"
+ echo "********************************************"
+ echo "********************************************"
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo go to /etc/ssh/sshd_config and fix the file!
+ echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
+ echo "********************************************"
+ echo "********************************************"
  
  #cleanup of temp files
  rm -f $TEMP/basic.allow
@@ -209,6 +227,7 @@ f2b
 piholeInstall
 piholeUpdate
 CloudflaredInstall
+#PiCloudflaredInstall
 CloudflaredConfig
 piVpn
 Hygene
