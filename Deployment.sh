@@ -2,7 +2,7 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 13 Aug 2020
+##  Last Modified 17 Aug 2020
 ## Version 2.2
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
@@ -40,13 +40,11 @@ function Welcome()
  # Display the welcome dialog
     whiptail --msgbox --backtitle "Welcome" --title "Azure VPN & Pihole" "This installer will transform your Azure Umbuntu Instance into a Pihole that leverages Cloud Flare DNS (https) w/ a VPN functionality!" ${r} ${c}
 
- }
-
-
-function Initial()
-{
-	# update the service and setup directories
+	
+	# update the box and setup directories
 	apt-get update && apt-get dist-upgrade -y
+	wait
+	apt autoremove -y
 	wait
 	mkdir /scripts
 	mkdir $TEMP
@@ -55,16 +53,28 @@ function Initial()
 	chmod 777 $FINISHED
 	chmod 777 $TEMP
 	chmod 777 $CONFIG
-	echo "full" >> $CONFIG/type.conf
-	echo "no" >> $CONFIG/test.conf
 	
 	# get a allowlist just in case!
 	curl -o $TEMP/basic.allow 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/Allow%20Lists/basic.allow'
 	
+	## Unattended Upgrades just to be safe
+	apt-get --yes --quiet --no-install-recommends install unattended-upgrades
+	
 	#download MFA
 	curl -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
+
+ }
+ 
+ function config_setup()
+{
+	echo "no" > $CONFIG/test.conf
+	echo "full" > $CONFIG/type.conf
+	echo "cloudflared" > $CONFIG/dns_type.conf
+	echo "yes_vpn" > $CONFIG/vpn.conf
+	echo "no" > $CONFIG/pi.conf
 		
 }
+
 
 function f2b()
 {
@@ -183,10 +193,6 @@ function piVpn()
 
 }
 
-function Hygene()
-{
-apt-get --yes --quiet --no-install-recommends install unattended-upgrades
-}
 
 function Cleanup()
 {
@@ -222,13 +228,33 @@ function Cleanup()
 
 #Main Program
 Welcome
-Initial
+config_setup
+
+dns_type=$(<"$CONFIG/dns_type.conf") 
+vpn_box= $(<"$CONFIG/vpn.conf")
+pi_box=$(<"$CONFIG/pi.conf")
+
 f2b
 piholeInstall
 piholeUpdate
-CloudflaredInstall
-#PiCloudflaredInstall
-CloudflaredConfig
-piVpn
-Hygene
+
+# Install Cloudflared
+if [ $dns_type = "cloudflared" ]
+	then if [ $pi_box = "no"]
+			then
+				CloudflaredInstall
+				CloudflaredConfig
+			else
+				PiCloudflaredInstall
+		fi
+fi
+
+
+## Check if we want a VPN Installed
+if [ $vpn_box = "yes_vpn" ]
+	then
+		piVpn
+	
+fi
+
 Cleanup
