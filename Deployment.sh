@@ -240,7 +240,7 @@ piholeUpdate
 
 # Install Cloudflared
 if [ $dns_type = "cloudflared" ]
-	then if [ $pi_box = "no"]
+	then if [ $pi_box = "no" ]
 			then
 				CloudflaredInstall
 				CloudflaredConfig
