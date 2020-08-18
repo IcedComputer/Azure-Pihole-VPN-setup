@@ -176,6 +176,23 @@ function CloudflaredConfig()
 
 }
 
+function UnboundInstall()
+{
+
+	apt install unbound
+	wait
+	curl -o $FINISHED/unbound_updates.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Scripts/unbound_updates.sh'
+	wait
+	bash $FINISHED/unbound_updates.sh
+	wait
+	curl -o /etc/unbound/unbound.conf.d/pi-hole.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/pi-hole.conf'
+	wait
+	curl -o /etc/dnsmasq.d/51-unbound.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/51-unbound.conf'
+	wait
+	service unbound restart
+	crontab -l | { cat; echo "7 0 * */4 * bash /scripts/Finished/unbound_updates.sh"; } | crontab -
+
+}
 
 function piVpn()
 {
@@ -246,6 +263,10 @@ if [ $dns_type = "cloudflared" ]
 				CloudflaredConfig
 			else
 				PiCloudflaredInstall
+		fi
+	else if [ $dns_type = "unbound" ]
+			then
+				UnboundInstall
 		fi
 fi
 
