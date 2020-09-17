@@ -191,7 +191,7 @@ function CloudflaredConfig()
 function UnboundInstall()
 {
 
-	apt install unbound
+	apt install unbound -y
 	wait
 	curl -o $FINISHED/unbound_updates.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Scripts/unbound_updates.sh'
 	wait
@@ -201,7 +201,10 @@ function UnboundInstall()
 	wait
 	curl -o /etc/dnsmasq.d/51-unbound.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/51-unbound.conf'
 	wait
+
 	service unbound restart
+	systemctl start unbound
+	systemctl enable unbound
 	crontab -l | { cat; echo "7 0 * */4 * bash /scripts/Finished/unbound_updates.sh"; } | crontab -
 
 }

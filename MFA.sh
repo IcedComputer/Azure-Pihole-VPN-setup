@@ -7,7 +7,7 @@
 function MFA()
 {
 # Get MFA
-apt-get install libpam-google-authenticator
+apt-get install libpam-google-authenticator -y
 wait
 }
 
