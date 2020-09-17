@@ -2,12 +2,24 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 17 Aug 2020
-## Version 2.2
+##  Last Modified 17 Sep 2020
+## Version 2.3
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
-## VARS
+## Set your options
+TEST="no"
+#TEST="yes"
+TYPE="full"
+#TYPE="security"
+DNSTYPE="cloudflared"
+#DNSTYPE="unbound"
+VPN="yes_vpn"
+#VPN="no"
+PI="no"
+#PI="yes"
+
+## Fixed VARS
 TEMP=/scripts/temp
 FINISHED=/scripts/Finished
 PIHOLE=/etc/pihole
@@ -67,11 +79,11 @@ function Welcome()
  
  function config_setup()
 {
-	echo "no" > $CONFIG/test.conf
-	echo "full" > $CONFIG/type.conf
-	echo "cloudflared" > $CONFIG/dns_type.conf
-	echo "yes_vpn" > $CONFIG/vpn.conf
-	echo "no" > $CONFIG/pi.conf
+	echo $TEST > $CONFIG/test.conf
+	echo $TYPE > $CONFIG/type.conf
+	echo $DNSTYPE > $CONFIG/dns_type.conf
+	echo $VPN > $CONFIG/vpn.conf
+	echo $PI > $CONFIG/pi.conf
 		
 }
 
