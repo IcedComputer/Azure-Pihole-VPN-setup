@@ -27,7 +27,7 @@ CONFIG=/scripts/Finished/CONFIG
 
 ##Screen Size
 
-# Find the rows andmk columns. Will default to 80x24 if it can not be detected.
+# Find the rows and columns. Will default to 80x24 if it can not be detected.
 screen_size=$(stty size 2>/dev/null || echo 24 80)
 rows=$(echo $screen_size | awk '{print $1}')
 columns=$(echo $screen_size | awk '{print $2}')
