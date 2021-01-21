@@ -5,5 +5,5 @@
 TEMP=/scripts/temp
 
 ## add to update Script to run every 6 months
-wget -O $TEMP/root.hints https://www.internic.net/domain/named.root
+curl --tlsv1.2 -o $TEMP/root.hints https://www.internic.net/domain/named.root
 mv $TEMP/root.hints /var/lib/unbound/
