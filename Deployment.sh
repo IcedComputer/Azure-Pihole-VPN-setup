@@ -2,8 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 17 Sep 2020
-## Version 2.3
+##  Last Modified 12 May 2021
+## Version 2.32
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -18,6 +18,8 @@ VPN="yes_vpn"
 #VPN="no"
 PI="no"
 #PI="yes"
+VER="yes"
+#VER="no"
 
 ## Fixed VARS
 TEMP=/scripts/temp
@@ -84,6 +86,7 @@ function Welcome()
 	echo $DNSTYPE > $CONFIG/dns_type.conf
 	echo $VPN > $CONFIG/vpn.conf
 	echo $PI > $CONFIG/pi.conf
+	echo $VER > $CONFIG/ver.conf
 		
 }
 
@@ -110,27 +113,29 @@ function piholeInstall()
 	
 	curl -sSL https://install.pi-hole.net | bash
 	wait
-	cd /etc/.pihole
-	sudo git fetch --tags
-	wait
-	sudo git checkout v4.4
-	wait
-	cd /var/www/html/admin
-	sudo git fetch --tags
-	wait
-	sudo git checkout v4.3.3
-	wait
-	pihole -r
-	wait
-	pihole checkout ftl v4.3.1
-	wait
+	
+	## if you want version 4
+	#cd /etc/.pihole
+	#sudo git fetch --tags
+	#wait
+	#sudo git checkout v4.4
+	#wait
+	#cd /var/www/html/admin
+	#sudo git fetch --tags
+	#wait
+	#sudo git checkout v4.3.3
+	#wait
+	#pihole -r
+	#wait
+	#pihole checkout ftl v4.3.1
+	#wait
 }
 
 function piholeUpdate()
 {
 	#Update whitelist
-	cat $TEMP/basic.allow $PIHOLE/whitelist.txt | sort | uniq > $TEMP/whitelist.txt
-	mv $TEMP/whitelist.txt $PIHOLE/whitelist.txt
+	cat $TEMP/basic.allow $PIHOLE/whitelist.txt | sort | uniq > $TEMP/final.allow.temp
+	cp $TEMP/final.allow.temp $PIHOLE/whitelist.txt
 	
 		
 	#download a new refresh.sh and run it to get updater
@@ -249,6 +254,7 @@ function Cleanup()
  #cleanup of temp files
  rm -f $TEMP/basic.allow
  rm -f $TEMP/Cloudflared.deb
+ rm -f $TEMP/*.temp
  
  apt autoremove -y
  
