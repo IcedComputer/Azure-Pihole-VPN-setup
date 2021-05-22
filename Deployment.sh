@@ -319,7 +319,7 @@ pi_box=$(<"$CONFIG/pi.conf")
 
 f2b
 piholeInstall
-piholeUpdate
+
 
 # Install Cloudflared
 if [ $dns_type = "cloudflared" ]
@@ -344,5 +344,6 @@ if [ $vpn_box = "yes_vpn" ]
 	
 fi
 
+piholeUpdate
 Cleanup
 block
