@@ -8,12 +8,12 @@
 ##
 
 ## Set your options
-TEST="no"
-#TEST="yes"
+#TEST="no"
+TEST="yes"
 TYPE="full"
 #TYPE="security"
-DNSTYPE="cloudflared"
-#DNSTYPE="unbound"
+#DNSTYPE="cloudflared"
+DNSTYPE="unbound"
 VPN="yes_vpn"
 #VPN="no"
 PI="no"
