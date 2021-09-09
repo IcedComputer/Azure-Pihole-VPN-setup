@@ -78,6 +78,7 @@ function Welcome()
 	curl --tlsv1.2 -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
 
  }
+
  
  function config_setup()
 {
