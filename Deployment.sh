@@ -20,6 +20,7 @@ PI="no"
 #PI="yes"
 VER="yes"
 #VER="no"
+BLANK=" "
 
 ## Fixed VARS
 TEMP=/scripts/temp
@@ -88,6 +89,7 @@ function Welcome()
 	echo $VPN > $CONFIG/vpn.conf
 	echo $PI > $CONFIG/pi.conf
 	echo $VER > $CONFIG/ver.conf
+	echo $BLANK > $CONFIG/perm_allow.conf
 		
 }
 
