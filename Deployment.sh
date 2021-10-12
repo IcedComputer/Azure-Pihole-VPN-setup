@@ -8,8 +8,8 @@
 ##
 
 ## Set your options
-#TEST="no"
-TEST="yes"
+TEST="no"
+#TEST="yes"
 TYPE="full"
 #TYPE="security"
 #DNSTYPE="cloudflared"
@@ -210,6 +210,15 @@ function UnboundInstall()
 	curl --tlsv1.2 -o /etc/dnsmasq.d/51-unbound.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/51-unbound.conf'
 	wait
 
+
+	systemctl disable unbound-resolvconf.service
+	wait
+	sudo systemctl stop unbound-resolvconf.service
+	wait
+	sed -i "s/servers=8.8.8.8 8.8.4.4/servers=127.0.0.1/g" /etc/dhcpcd.conf
+	wait
+	systemctl restart dhcpcd
+	wait
 	service unbound restart
 	systemctl start unbound
 	systemctl enable unbound
