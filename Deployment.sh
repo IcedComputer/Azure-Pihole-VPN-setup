@@ -2,8 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 06 Sep 2021
-## Version 2.33
+##  Last Modified 18 April 2023
+## Version 2.34
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -18,6 +18,7 @@ VPN="yes_vpn"
 #VPN="no"
 PI="no"
 #PI="yes"
+## Is this a pihole version 5 or greater
 VER="yes"
 #VER="no"
 BLANK=" "
@@ -77,6 +78,8 @@ function Welcome()
 	
 	#download MFA
 	curl --tlsv1.2 -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
+	
+	apt install sqlite3
 
  }
 
@@ -136,17 +139,11 @@ function piholeInstall()
 
 function piholeUpdate()
 {
-	#Update whitelist
-	cat $TEMP/basic.allow $PIHOLE/whitelist.txt | sort | uniq > $TEMP/final.allow.temp
-	cp $TEMP/final.allow.temp $PIHOLE/whitelist.txt
-	
-		
-	#download a new refresh.sh and run it to get updater
+
+	#download a new refresh.sh and run it to get updater, then run updates
 	curl --tlsv1.2 -o $TEMPDIR/refresh.sh 'https://raw.githubusercontent.com/IcedComputer/Personal-Pi-Hole-configs/master/Updates/refresh.sh'
 	wait
 	bash $TEMPDIR/refresh.sh
-	wait
-	curl --tlsv1.2 -o $FINISHED/ListUpdater.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/ListUpdater.sh'
 	wait
 	# run updater
 	bash $FINISHED/updates.sh
