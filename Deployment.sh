@@ -80,6 +80,7 @@ function Welcome()
 	curl --tlsv1.2 -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
 	
 	apt install sqlite3
+	apt-get install vim -y
 
  }
 
@@ -148,15 +149,18 @@ function piholeUpdate()
 	# run updater
 	bash $FINISHED/updates.sh
 	wait
+	pihole restartdns
 		
 }
 
 function CloudflaredInstall()
 {
 	#Install Cloudflared
-	curl --tlsv1.2 -o $TEMP/Cloudflared.deb  'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb'
+	mkdir -p --mode=0755 /usr/share/keyrings
+	curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+	echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
 	wait
-	apt-get install $TEMP/Cloudflared.deb
+	apt-get update && apt-get install cloudflared
 	wait
 	cloudflared -v
 
@@ -164,12 +168,12 @@ function CloudflaredInstall()
 
 function PiCloudflaredInstall()
 {
-	curl --tlsv1.2 -o $TEMP/cloudflared-stable-linux-arm.tgz 'https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-arm.tgz'
+	mkdir -p --mode=0755 /usr/share/keyrings
+	curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+	echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bullseye main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
 	wait
-	tar -xvzf $TEMP/cloudflared-stable-linux-arm.tgz
+	apt-get update && apt-get install cloudflared
 	wait
-	sudo cp ./cloudflared /usr/local/bin
-	sudo chmod +x /usr/local/bin/cloudflared
 	cloudflared -v
 }
 
@@ -262,7 +266,6 @@ function Cleanup()
  
  #cleanup of temp files
  rm -f $TEMP/basic.allow
- rm -f $TEMP/Cloudflared.deb
  rm -f $TEMP/*.temp
  
  apt autoremove -y
@@ -318,6 +321,17 @@ function block()
 	iptables -A INPUT -s 203.107.1.4 -j DROP
 }
 
+function SelfUse()
+{
+## ensure the server uses itself for DNS lookup
+## test
+unlink /etc/resolv.conf
+ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+sudo systemctl restart systemd-resolved.service
+sed -i "s/nameserver/#nameserver/g" /etc/resolv.conf
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
+}
+
 #Main Program
 Welcome
 config_setup
@@ -353,6 +367,8 @@ if [ $vpn_box = "yes_vpn" ]
 	
 fi
 
+SelfUse
 piholeUpdate
+
 Cleanup
 block
