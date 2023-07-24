@@ -260,7 +260,7 @@ function Cleanup()
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
  echo go to /etc/ssh/sshd_config and fix the file!
- echo run command sed -i "s/#edit/AllowUsers USERNAME/g" /etc/ssh/sshd_config
+ echo run command "echo AllowUsers USERNAME > /etc/ssh/sshd_config"
  echo "********************************************"
  echo "********************************************"
  
@@ -275,51 +275,7 @@ function Cleanup()
  crontab -l | { cat; echo "5 8 * * * bash /scripts/Finished/refresh.sh"; } | crontab -
 }
 
-function block()
-{
-	iptables -A OUTPUT -d 9.9.9.9 -j DROP
-	iptables -A OUTPUT -d 9.9.9.10 -j DROP
-	iptables -A OUTPUT -d 208.67.222.222 -j DROP
-	iptables -A OUTPUT -d 208.67.220.220 -j DROP
-	iptables -A OUTPUT -d 208.67.222.123 -j DROP
-	iptables -A OUTPUT -d 208.67.220.123 -j DROP
-	iptables -A OUTPUT -d 96.113.151.145 -j DROP
-	iptables -A OUTPUT -d 176.103.130.130 -j DROP
-	iptables -A OUTPUT -d 176.103.130.131 -j DROP
-	iptables -A OUTPUT -d 176.103.130.132 -j DROP
-	iptables -A OUTPUT -d 176.103.130.134 -j DROP
-	iptables -A OUTPUT -d 176.103.130.136 -j DROP
-	iptables -A OUTPUT -d 176.103.130.137 -j DROP
-	iptables -A OUTPUT -d 185.228.168.9 -j DROP
-	iptables -A OUTPUT -d 185.228.169.9 -j DROP
-	iptables -A OUTPUT -d 185.228.168.168 -j DROP
-	iptables -A OUTPUT -d 185.228.169.168 -j DROP
-	iptables -A OUTPUT -d 185.228.168.10 -j DROP
-	iptables -A OUTPUT -d 185.228.169.11 -j DROP
-	iptables -A OUTPUT -d 204.89.253.132 -j DROP
-	iptables -A OUTPUT -d 203.107.1.4 -j DROP
-	iptables -A INPUT -s 9.9.9.9 -j DROP
-	iptables -A INPUT -s 9.9.9.10 -j DROP
-	iptables -A INPUT -s 208.67.222.222 -j DROP
-	iptables -A INPUT -s 208.67.220.220 -j DROP
-	iptables -A INPUT -s 208.67.222.123 -j DROP
-	iptables -A INPUT -s 208.67.220.123 -j DROP
-	iptables -A INPUT -s 96.113.151.145 -j DROP
-	iptables -A INPUT -s 176.103.130.130 -j DROP
-	iptables -A INPUT -s 176.103.130.131 -j DROP
-	iptables -A INPUT -s 176.103.130.132 -j DROP
-	iptables -A INPUT -s 176.103.130.134 -j DROP
-	iptables -A INPUT -s 176.103.130.136 -j DROP
-	iptables -A INPUT -s 176.103.130.137 -j DROP
-	iptables -A INPUT -s 185.228.168.9 -j DROP
-	iptables -A INPUT -s 185.228.169.9 -j DROP
-	iptables -A INPUT -s 185.228.168.168 -j DROP
-	iptables -A INPUT -s 185.228.169.168 -j DROP
-	iptables -A INPUT -s 185.228.168.10 -j DROP
-	iptables -A INPUT -s 185.228.169.11 -j DROP
-	iptables -A INPUT -s 204.89.253.132 -j DROP
-	iptables -A INPUT -s 203.107.1.4 -j DROP
-}
+
 
 function SelfUse()
 {
@@ -371,4 +327,3 @@ SelfUse
 piholeUpdate
 
 Cleanup
-block
