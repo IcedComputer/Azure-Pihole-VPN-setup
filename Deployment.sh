@@ -337,7 +337,7 @@ Welcome
 config_setup
 
 dns_type=$(<"$CONFIG/dns_type.conf") 
-vpn_box= $(<"$CONFIG/vpn.conf")
+vpn_box=$(<"$CONFIG/vpn.conf")
 pi_box=$(<"$CONFIG/pi.conf")
 
 f2b
