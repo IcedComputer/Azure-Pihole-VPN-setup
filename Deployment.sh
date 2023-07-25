@@ -212,17 +212,23 @@ function UnboundInstall()
 	wait
 
 
-	systemctl disable unbound-resolvconf.service
+	systemctl disable --now unbound-resolvconf.service
 	wait
-	sudo systemctl stop unbound-resolvconf.service
+	sed -Ei 's/^unbound_conf=/#unbound_conf=/' /etc/resolvconf.conf
 	wait
-	sed -i "s/servers=8.8.8.8 8.8.4.4/servers=127.0.0.1/g" /etc/dhcpcd.conf
-	wait
-	systemctl restart dhcpcd
+	rm /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
 	wait
 	service unbound restart
-	systemctl start unbound
-	systemctl enable unbound
+	
+	#sudo systemctl stop unbound-resolvconf.service
+	#wait
+	#sed -i "s/servers=8.8.8.8 8.8.4.4/servers=127.0.0.1/g" /etc/dhcpcd.conf
+	#wait
+	#systemctl restart dhcpcd
+	#wait
+	#service unbound restart
+	#systemctl start unbound
+	#systemctl enable unbound
 	crontab -l | { cat; echo "7 0 * */4 * bash /scripts/Finished/unbound_updates.sh"; } | crontab -
 
 }
@@ -275,6 +281,12 @@ function Cleanup()
  crontab -l | { cat; echo "5 8 * * * bash /scripts/Finished/refresh.sh"; } | crontab -
 }
 
+function GPG()
+{
+gpg --full-generate-key
+wait
+echo "gpg --output <KEY>.gpg --armor --export <KEY"
+}
 
 
 function SelfUse()
@@ -327,3 +339,4 @@ SelfUse
 piholeUpdate
 
 Cleanup
+GPG
