@@ -7,17 +7,17 @@
 function MFA()
 {
 # Get MFA
-apt-get install libpam-google-authenticator -y
+apt install libpam-google-authenticator
 wait
 }
 
 function config()
 {
 # Get MFA
-bash -c 'echo "auth required pam_google_authenticator.so" >> /etc/pam.d/sshd'
+bash -c 'echo "auth required pam_google_authenticator.so" >> /etc/pam.d/common-session'
 wait
-sed -i "s/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g" /etc/ssh/sshd_config
-systemctl restart sshd.service
+sed -i "s/KbdInteractiveAuthentication no/KbdInteractiveAuthentication yes/g" /etc/ssh/sshd_config
+systemctl restart ssh
 # for a Pi
 service ssh restart
 
