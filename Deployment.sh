@@ -229,7 +229,7 @@ function UnboundInstall()
 	#service unbound restart
 	#systemctl start unbound
 	#systemctl enable unbound
-	crontab -l | { cat; echo "7 0 * */4 * bash /scripts/Finished/unbound_updates.sh"; } | crontab -
+	crontab -l | { cat; echo "7 0 4,22 */4 * bash /scripts/Finished/unbound_updates.sh"; } | crontab -
 
 }
 
@@ -277,7 +277,8 @@ function Cleanup()
  apt autoremove -y
  
  crontab -l | { cat; echo "15 11 * * * /sbin/shutdown -r +5"; } | crontab -
- crontab -l | { cat; echo "10 9 * * * bash /scripts/Finished/updates.sh"; } | crontab -
+ crontab -l | { cat; echo "10 9 * * 0-1,3-4,6 bash /scripts/Finished/updates.sh"; } | crontab -
+ crontab -l | { cat; echo "10 9 * * 2,5 bash /scripts/Finished/purge.sh"; } | crontab -
  crontab -l | { cat; echo "5 8 * * * bash /scripts/Finished/refresh.sh"; } | crontab -
 }
 
