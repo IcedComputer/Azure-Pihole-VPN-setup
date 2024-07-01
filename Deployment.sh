@@ -58,7 +58,7 @@ function Welcome()
 
 	
 	# update the box and setup directories
-	apt-get update & apt-get dist-upgrade -y
+	apt-get update && apt-get dist-upgrade -y
 	wait
 	apt autoremove -y
 	wait
