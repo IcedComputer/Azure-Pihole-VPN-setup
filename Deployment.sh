@@ -286,7 +286,7 @@ function GPG()
 {
 gpg --full-generate-key
 wait
-echo "gpg --output <KEY>.gpg --armor --export <KEY"
+echo "gpg --output <KEY>.gpg --armor --export <KEY>"
 }
 
 
