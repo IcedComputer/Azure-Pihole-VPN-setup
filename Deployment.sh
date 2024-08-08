@@ -2,8 +2,8 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 2024-07-01
-## Version 2.4
+##  Last Modified 2024-08-08
+## Version 2.5
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
 
@@ -118,7 +118,16 @@ function piholeInstall()
 {
 	#Install Pihole
 	
-	curl -sSL https://install.pi-hole.net | bash
+		if [ $pi_box = "no" ]
+			then
+				curl -sSL https://install.pi-hole.net | bash
+				wait
+			else
+				curl -sSL https://install.pi-hole.net | sudo PIHOLE_SKIP_OS_CHECK=true bash
+
+		fi
+	
+	
 	wait
 	
 	## if you want version 4
@@ -235,7 +244,7 @@ function UnboundInstall()
 
 function piVpn()
 {
-	
+		
 	curl --tlsv1.2 -L https://install.pivpn.io | bash
 	wait
 	
