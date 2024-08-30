@@ -105,13 +105,13 @@ function f2b()
 	wait
 
 	#Establish a Permaban list
-	curl --tlsv1.2 -o /etc/fail2ban/action.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/action.d_permaban.conf'
-	curl --tlsv1.2 -o /etc/fail2ban/filter.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/filter.d_permaban.conf'
-	curl --tlsv1.2 -o $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
-	wait
+	#curl --tlsv1.2 -o /etc/fail2ban/action.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/action.d_permaban.conf'
+	#curl --tlsv1.2 -o /etc/fail2ban/filter.d/permaban.conf 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/filter.d_permaban.conf'
+	#curl --tlsv1.2 -o $TEMP/permaban.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
+	#wait
 
-	mv $TEMP/permaban.temp /etc/fail2ban/jail.local
-	curl --tlsv1.2 -o $TEMP/additional.config 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/sshd_config'
+	#mv $TEMP/permaban.temp /etc/fail2ban/jail.local
+	#curl --tlsv1.2 -o $TEMP/additional.config 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/sshd_config'
 }
 
 function piholeInstall()
