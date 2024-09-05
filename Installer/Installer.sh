@@ -2,7 +2,7 @@
 
 ##  Installer Script for Pihole  with Various Options
 ##	Created by: Iced Computer
-##  Last Modified 2024-08-08
+##  Last Modified 2024-09-05
 ## Version 3.0
 ## Some info taken from Pivpn & Pihole (launchers)
 
@@ -19,8 +19,8 @@ VPN="yes_vpn"
 PI="no"
 #PI="yes"
 ## Is this a pihole version 5 or greater
-VER="yes"
-#VER="no"
+VER="5"
+#VER="4"
 BLANK=" "
 
 ## Fixed VARS
@@ -49,7 +49,7 @@ function Basics()
 	chmod 777 $TEMP
 	chmod 777 $CONFIG
 	
-	apt install sqlite3
+	apt-get install sqlite3 -y
 	apt-get install vim -y
 
  }
@@ -71,7 +71,7 @@ function GPG()
 {
 gpg --full-generate-key
 wait
-echo "gpg --output <KEY>.gpg --armor --export <KEY>"
+bash -c 'echo -e "\033[0;31m gpg --output <KEY>.gpg --armor --export <KEY> \x1b[39m"'
 }
 
 
