@@ -3,8 +3,7 @@
 ##  Installer Script for Pihole  with Various Options
 ##	Created by: Iced Computer
 ##  Last Modified 2024-09-05
-## Version 3.0
-## Some info taken from Pivpn & Pihole (launchers)
+## Version 1.0
 
 
 ## Set your options
@@ -51,7 +50,12 @@ function Basics()
 	
 	apt-get install sqlite3 -y
 	apt-get install vim -y
-
+	
+	## Unattended Upgrades just to be safe
+	apt-get --yes --quiet --no-install-recommends install unattended-upgrades
+	
+	#download MFA
+	curl --tlsv1.3 -o $FINISHED/MFA.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/MFA.sh'
  }
 
  
@@ -67,6 +71,18 @@ function Basics()
 		
 }
 
+
+function f2b()
+{
+	#Install Fail to Ban
+	apt-get install fail2ban -y
+	wait
+	curl --tlsv1.3 -o $TEMP/jail.local.temp 'https://raw.githubusercontent.com/IcedComputer/F2B-Configs/master/jail.local'
+	wait
+	mv $TEMP/jail.local.temp /etc/fail2ban/jail.local
+	
+}
+
 function GPG()
 {
 gpg --full-generate-key
@@ -78,4 +94,5 @@ bash -c 'echo -e "\033[0;31m gpg --output <KEY>.gpg --armor --export <KEY> \x1b[
 #Main Program
 Basics
 Config_setup
+f2b
 GPG

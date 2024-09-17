@@ -209,7 +209,7 @@ function CloudflaredConfig()
 function UnboundInstall()
 {
 
-	apt install unbound -y
+	apt-get install unbound -y
 	wait
 	curl --tlsv1.3 -o $FINISHED/unbound_updates.sh 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Scripts/unbound_updates.sh'
 	wait
@@ -247,6 +247,9 @@ function piVpn()
 		
 	curl --tlsv1.3 -L https://install.pivpn.io | bash
 	wait
+	
+	## Disable peer-to-peer
+	iptables -I FORWARD -i wg0 -o wg0 -j REJECT --reject-with icmp-admin-prohibited
 	
 	## OpenVPN items
 		#curl --tlsv1.3 -o /etc/dnsmasq.d/02-ovpn.conf 'https://raw.githubusercontent.com/IcedComputer/Azure-Pihole-VPN-setup/master/Configuration%20Files/02-ovpn.conf'
