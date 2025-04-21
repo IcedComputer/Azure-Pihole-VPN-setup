@@ -2,7 +2,7 @@
 
 ##  Deployment Script for Azure Pihole using Cloudflare as DNS service + VPN service
 ##	Created by: Iced Computer
-##  Last Modified 2024-08-30
+##  Last Modified 2025-02-20
 ## Version 3.0
 ## Some info taken from Pivpn & Pihole (launchers)
 ##
@@ -18,9 +18,9 @@ VPN="yes_vpn"
 #VPN="no"
 PI="no"
 #PI="yes"
-## Is this a pihole version 5 or greater
-VER="yes"
-#VER="no"
+## Pihole Version
+VER="6"
+#VER="5"
 BLANK=" "
 
 ## Fixed VARS
